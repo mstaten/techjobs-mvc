@@ -18,7 +18,9 @@ public class SearchController {
 
     @RequestMapping(value = "")
     public String search(Model model) {
+        String checkedColumn = "all";
         model.addAttribute("columns", ListController.columnChoices);
+        model.addAttribute("checkedColumn", checkedColumn);
         return "search";
     }
 
@@ -28,7 +30,7 @@ public class SearchController {
     public String results(@RequestParam String searchType, @RequestParam String searchTerm, Model model) {
 
         // look up results via JobData class
-        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+        ArrayList<HashMap<String, String>> jobs;
 
         if (searchType.equals("all")) {
             jobs = JobData.findByValue(searchTerm);
@@ -36,12 +38,18 @@ public class SearchController {
             jobs = JobData.findByColumnAndValue(searchType, searchTerm);
         }
 
+        // pass title
+        model.addAttribute("title", jobs.size() + " Result(s)");
+
         // pass results into search.html view via the model
         model.addAttribute("jobs", jobs);
 
         // pass ListController.columnChoices to the view
         model.addAttribute("columns", ListController.columnChoices);
 
+        // right before returning, somehow make view remember to check searchTerm next time it displays
+        String checkedColumn = searchType;
+        model.addAttribute("checkedColumn", checkedColumn);
         return "search";
     }
 

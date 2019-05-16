@@ -8,8 +8,6 @@
 
 <div class="container body-content">
 
-    <h1 th:text="${#strings.capitalizeWords(title)}"></h1>
-
     <form th:action="@{/search/results}">
         <h2>Search by:</h2>
 
@@ -20,7 +18,7 @@
                         name="searchType"
                         th:id="${column.key}"
                         th:value="${column.key}"
-                        th:checked="${column.key == 'all'}"/>
+                        th:checked="${column.key == checkedColumn}"/>
                 <label th:for="${column.key}" th:text="${column.value}"></label>
             </span>
 
@@ -37,10 +35,13 @@
     <hr />
 
     <!-- TODO #2 - Loop over jobs map to display all job fields -->
+
+    <h3 th:text="${#strings.capitalizeWords(title)}"></h3>
+
     <table th:fragment="display-all" th:each="job : ${jobs}" class="job-listing">
         <tr th:each="field : ${job}">
-            <td th:text="${field.key}"></td>
-            <td th:text="${field.value}"></td>
+            <td th:text="${#strings.capitalizeWords(field.key)}"></td>
+            <td><a th:href="@{/list/jobs(column=${field.key},value=${field.value})}" th:text="${field.value}"><span ></span></a></td>
         </tr>
     </table>
 
