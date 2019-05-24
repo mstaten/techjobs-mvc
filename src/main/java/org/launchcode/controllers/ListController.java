@@ -14,23 +14,14 @@ import java.util.HashMap;
  */
 @Controller
 @RequestMapping(value = "list")
-public class ListController {
+public class ListController extends TechJobsController {
 
-    static HashMap<String, String> columnChoices = new HashMap<>();
-
-    public ListController () {
-        columnChoices.put("core competency", "Skill");
-        columnChoices.put("employer", "Employer");
-        columnChoices.put("location", "Location");
-        columnChoices.put("position type", "Position Type");
-        columnChoices.put("all", "All");
+    public ListController() {
+        super();
     }
 
     @RequestMapping(value = "")
-    public String list(Model model) {
-
-        model.addAttribute("columns", columnChoices);
-
+    public String list() {
         return "list";
     }
 
@@ -40,11 +31,13 @@ public class ListController {
         if (column.equals("all")) {
             ArrayList<HashMap<String, String>> jobs = JobData.findAll();
             model.addAttribute("title", "All Jobs");
+            model.addAttribute("results", jobs.size() + " Result(s)");
             model.addAttribute("jobs", jobs);
             return "list-jobs";
         } else {
             ArrayList<String> items = JobData.findAll(column);
-            model.addAttribute("title", "All " + columnChoices.get(column) + " Values");
+            model.addAttribute("title", "All " + TechJobsController.getColumnChoices().get(column) + " Values");
+            model.addAttribute("results", items.size() + " Result(s)");
             model.addAttribute("column", column);
             model.addAttribute("items", items);
             return "list-column";
@@ -57,7 +50,7 @@ public class ListController {
             @RequestParam String column, @RequestParam String value) {
 
         ArrayList<HashMap<String, String>> jobs = JobData.findByColumnAndValue(column, value);
-        model.addAttribute("title", "Jobs with " + columnChoices.get(column) + ": " + value);
+        model.addAttribute("title", "Jobs with " + TechJobsController.getColumnChoices().get(column) + ": " + value);
         model.addAttribute("jobs", jobs);
         model.addAttribute("results", jobs.size() + " Result(s)");
 

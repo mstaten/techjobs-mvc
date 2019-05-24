@@ -14,12 +14,11 @@ import java.util.HashMap;
  */
 @Controller
 @RequestMapping("search")
-public class SearchController {
+public class SearchController extends TechJobsController {
 
     @RequestMapping(value = "")
     public String search(Model model) {
         String checkedColumn = "all";
-        model.addAttribute("columns", ListController.columnChoices);
         model.addAttribute("checkedColumn", checkedColumn);
         return "search";
     }
@@ -44,10 +43,7 @@ public class SearchController {
         // pass results into search.html view via the model
         model.addAttribute("jobs", jobs);
 
-        // pass ListController.columnChoices to the view
-        model.addAttribute("columns", ListController.columnChoices);
-
-        // right before returning, somehow make view remember to check searchTerm next time it displays
+        // right before returning, make the view remember to check searchTerm next time it displays
         String checkedColumn = searchType;
         model.addAttribute("checkedColumn", checkedColumn);
         return "search";
